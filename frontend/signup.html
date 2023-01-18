@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice</title>
+</head>
+
+<body>
+    <nav class="navbar bg-warning ">
+        <div class="container">
+            <a href="index.html" class="navbar-brand">
+                <h1 class="text-dark">Home</h1>
+            </a>
+        </div>
+    </nav>
+	<br>
+    <section class="bg-gray" style="margin:15px " align='center' valign="middle" >
+        <form action="#">
+        <p>
+            <label>Username&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="username"></label>
+			<br><br>
+            <label>Password&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" id="password"></label>
+			<br><br>
+			<label>Birthday&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="date" id="birthday"></label>
+        </p>
+        <p>
+            <input type="button" value="Sign Up" id="signUpButton">
+        </p>
+    </form>
+    </section>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+	<script>
+        function start() {
+			var signUp = document.getElementById("signUpButton");
+			signUp.addEventListener("click", SignUp, false);
+		}
+        function ShowUser() {
+            axios.get('http://127.0.0.1:8000/user').then(res => {
+				console.log(res);
+			})
+		}
+
+		function SignUp() {
+            var username = document.getElementById("username");
+			var password = document.getElementById("password");
+			var birthday = document.getElementById("birthday");
+			if (username.value == "" || password.value == "" || birthday.value == "") {
+                start();
+                window.alert("Please input Complete Data!!");
+                return;
+            }
+			console.log(username.value);
+			console.log(password.value);
+			console.log(birthday.value);
+            axios.post('http://127.0.0.1:8000/user', {
+				username: username.value,
+				password: password.value,
+				birthday: birthday.value
+			}).then(res => {
+				console.log(res);
+				alert("Welcome");
+				location.replace("index.html");
+			}) .catch((error) => {
+				console.log(error);
+				console.log(error.response);
+				if (error.response.status == 400) {
+					start();
+					alert(error.response.data.detail.error)
+				}
+				})
+		}
+        window.addEventListener("load", start, false);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice</title>
+</head>
+
+<body>
+    <nav class="navbar bg-warning ">
+        <div class="container">
+            <a href="index.html" class="navbar-brand">
+                <h1 class="text-dark">Home</h1>
+            </a>
+        </div>
+    </nav>
+    <br>
+    <section class="bg-gray" style="margin:15px " align='center' valign="middle" >
+        <form action="#" >
+        <p>
+            <label>Username&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="username"></label>
+            <br><br>
+            <label>Password&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" id="password"></label>
+        </p>
+        <p>
+            <input type="button" value="Login" id="loginButton">
+            <a href="signup.html">
+                <input type="button" value="Sign Up" id="signUpButton">
+            </a>
+            
+        </p>
+    </form>
+    </section>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.11.0/qs.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <script>
+        function start() {
+            if(sessionStorage.getItem("access_token")){
+                location.replace("detail.html");
+            }
+			var login = document.getElementById("loginButton");
+			login.addEventListener("click", Login, false);
+		}
+        function Login() {
+            var username = document.getElementById("username");
+			var password = document.getElementById("password"); 
+            if (username.value == "" || password.value == "" ) {
+                start();
+                window.alert("Please input Complete Data!!");
+                return;
+            }
+            console.log(username.value);
+			console.log(password.value);
+            var params = new URLSearchParams();
+            params.append('username', username.value);
+            params.append('password', password.value);
+            axios.post('http://127.0.0.1:8000/login', params).then(res => {
+				console.log(res);
+                sessionStorage.setItem("username", username.value);
+                sessionStorage.setItem("access_token", res.data.access_token);
+                sessionStorage.setItem("token_type",res.data.token_type);
+				alert("Welcome  "+username.value);
+                location.replace("detail.html");
+			}) .catch((error) => {
+				console.log(error);
+				console.log(error.response);
+				if (error.response.status == 401) {
+					start();
+					alert(error.response.data.detail)
+				}
+				})
+        }
+        window.addEventListener("load", start, false);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

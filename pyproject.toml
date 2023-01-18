@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "ncku-practice"
+version = "0.1.0"
+description = ""
+authors = ["ting"]
+readme = "README.md"
+packages = [{include = "ncku_practice"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fastapi = "^0.89.1"
+alembic = "^1.9.2"
+sqlalchemy = "^1.4.46"
+psycopg2-binary = "^2.9.5"
+uvicorn = "^0.20.0"
+pydantic = {extras = ["dotenv"], version = "^1.10.4"}
+datetime = "^5.0"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcypt"], version = "^1.7.4"}
+python-multipart = "^0.0.5"
+pytest = "^7.2.1"
+httpx = "^0.23.3"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.1"
+requests = "^2.28.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
