@@ -25,6 +25,7 @@ httpx = "^0.23.3"
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.1"
 requests = "^2.28.2"
+commitizen = "^2.39.1"
 
 [build-system]
 requires = ["poetry-core"]

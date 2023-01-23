@@ -9,7 +9,7 @@ import crud
 import models
 from typing import Union
 
-app = FastAPI()
+app = FastAPI() #create a FastAPI "instance"
 
 origins = [
     "http://localhost",
@@ -40,12 +40,12 @@ async def read_root():
 
 
 @app.get("/user")
-async def read_user(username: Union[str,None] = None, db=Depends(db)) -> Response:
-	user = crud.get_user(db, username)
+async def read_user(db=Depends(db)) -> Response:
+	user = crud.get_user(db)
 	if user:
 		return user
 	else:
-		raise HTTPException(404, crud.error_message('No User found for username {}'.format(username)))
+		raise HTTPException(404, crud.error_message('No User found.'))
 
 @app.get("/user/{username}")
 async def read_user(username: str, db=Depends(db), token: str = Depends(oauth2_scheme)) -> Response:
