@@ -1,8 +1,5 @@
 from fastapi.testclient import TestClient
-from fastapi.security import OAuth2PasswordRequestForm
-from fastapi import Depends
-from main import app
-import json
+from app import app
 
 client = TestClient(app)
 token = ''
@@ -44,7 +41,7 @@ def test_login():
 	assert response.json()['token_type'] == 'bearer'
 
 def test_get_user_info_with_token():
-	response = client.get('/user/test',
+	response = client.get('/userinfo/test',
 		headers={
 			'Authorization': f'Bearer {token}'
 		}
@@ -53,13 +50,13 @@ def test_get_user_info_with_token():
 	assert response.json()['username'] == 'test'
 
 def test_get_user_info_without_token():
-	response = client.get('/user/test')
+	response = client.get('/userinfo/test')
 	assert response.status_code == 401
 	assert response.json()['detail'] == 'Not authenticated'
 
 def test_update_birthday():
 	response = client.put(
-		'/user/test',
+		'/userinfo/test',
 		json = {'birthday': '2020-01-01'},
 		headers={
 			'Authorization': f'Bearer {token}'
@@ -71,7 +68,7 @@ def test_update_birthday():
 
 def test_update_password():
 	response = client.put(
-		'/user/test',
+		'/userinfo/test',
 		json = {'password': 'newpassword'},
 		headers={
 			'Authorization': f'Bearer {token}'
@@ -82,7 +79,7 @@ def test_update_password():
 
 def test_update_birthday_and_password():
 	response = client.put(
-		'/user/test',
+		'/userinfo/test',
 		json = {'birthday': '2020-01-01','password': 'newpassword'},
 		headers={
 			'Authorization': f'Bearer {token}'
