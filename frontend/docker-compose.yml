@@ -1,0 +1,10 @@
+#使用3.7版的設定檔
+version: "3.7"
+#定義service，一個service可以用來啟動多個container
+services: 
+    frontend: # 定義一個service叫做 frontend
+        build: .
+        restart: always # 遇到error要不要重啟
+        container_name: ncku-practice-frontend
+        ports: # 開啟port端（對外對內的）
+            - "3000:80"
