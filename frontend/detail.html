@@ -55,13 +55,13 @@
               id="birthday"
           /></label>
           <br /><br />
-		  <label
+          <label
             >Create Time :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label
               id="create_time"
             ></label
           ></label>
           <br /><br />
-		  <label
+          <label
             >Last Login :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label
               id="last_login"
             ></label
@@ -70,7 +70,7 @@
         <p>
           <input type="button" value="Update" id="updateButton" />
         </p>
-		<p>
+        <p>
           <input type="button" value="Logout" id="logoutButton" />
         </p>
       </form>
@@ -86,54 +86,70 @@
         },
       };
       function start() {
-		if(!sessionStorage.getItem("access_token")){
-			location.replace("index.html");
-		}
+        if (!sessionStorage.getItem("access_token")) {
+          location.replace("index.html");
+        }
         var update = document.getElementById("updateButton");
-		var logout = document.getElementById("logoutButton");
+        var logout = document.getElementById("logoutButton");
 
         ShowUser();
         update.addEventListener("click", Update, false);
-		logout.addEventListener("click", Logout, false);
-	  }
+        logout.addEventListener("click", Logout, false);
+      }
       function ShowUser() {
         axios
           .get(
-            "http://127.0.0.1:8000/user/" + sessionStorage.getItem("username"),
+            "http://127.0.0.1:8000/userinfo/" +
+              sessionStorage.getItem("username"),
             config
           )
           .then((res) => {
             console.log(res);
             document.getElementById("username").innerHTML = res.data.username;
-            document.getElementById("oldBirthday").innerHTML =  res.data.birthday;
-			document.getElementById("create_time").innerHTML = Date(res.data.create_time);
-			document.getElementById("last_login").innerHTML =  Date(res.data.last_login);
+            document.getElementById("oldBirthday").innerHTML =
+              res.data.birthday;
+            var create_time = new Date(res.data.create_time);
+            create_time.setHours(create_time.getHours() + 8);
+            document.getElementById("create_time").innerHTML =
+              create_time.toLocaleString();
+            var last_login = new Date(res.data.last_login);
+            last_login.setHours(last_login.getHours() + 8);
+            document.getElementById("last_login").innerHTML =
+              last_login.toLocaleString();
+          })
+          .catch((error) => {
+            console.log(error);
+            sessionStorage.removeItem("access_token");
+            sessionStorage.removeItem("token_type");
+            sessionStorage.removeItem("username");
+            location.replace("index.html");
           });
       }
 
       function Update() {
         var password = document.getElementById("password");
         var birthday = document.getElementById("birthday");
-		console.log(password.value);
-		console.log(birthday.value);
+        console.log(password.value);
+        console.log(birthday.value);
 
         if (!password.value && !birthday.value) {
           start();
           window.alert("Please input at least one!!");
           return;
         } else if (password.value && birthday.value) {
-          var params = { 'password': password.value, 'birthday': birthday.value };
+          var params = { password: password.value, birthday: birthday.value };
         } else if (password.value) {
-          var params = { 'password': password.value };
+          var params = { password: password.value };
         } else {
-          var params = { 'birthday': birthday.value };
+          var params = { birthday: birthday.value };
         }
         console.log(password.value);
         console.log(birthday.value);
-		console.log(params);
+        console.log(params);
         axios
           .put(
-            "http://127.0.0.1:8000/user/" + sessionStorage.getItem("username"),
+            "http://127.0.0.1:8000/userinfo/" +
+              sessionStorage.getItem("username"),
             params,
             config
           )
@@ -152,12 +168,12 @@
           });
       }
 
-	  function Logout(){
-		sessionStorage.removeItem("access_token");
-		sessionStorage.removeItem("token_type");
-		sessionStorage.removeItem("username");
-		start();
-	  }
+      function Logout() {
+        sessionStorage.removeItem("access_token");
+        sessionStorage.removeItem("token_type");
+        sessionStorage.removeItem("username");
+        start();
+      }
       window.addEventListener("load", start, false);
     </script>
     <script

@@ -1,19 +1,21 @@
+#使用3.7版的設定檔
 version: "3.7"
-services: # 講述有幾個service 底下為 postgresSQL 跟 pgadmin
-    db: # 將postgresSQL叫做 db
-        image: postgres:latest # 告訴這個基於哪個image (OO概念 image就很像Class 要透過image建立container)
+#定義service，一個service可以用來啟動多個container
+services: 
+    db: # 定義一個service叫做 db (postgresSQL)
+        image: postgres:latest # 基於哪個image
         restart: always # 遇到error要不要重啟
-        environment: # 有關於postgresSQL的設定(要去看docker官網)
+        environment: # 有關於postgresSQL的環境變數設定(要去看docker官網)
             POSTGRES_DB: postgres
             POSTGRES_USER: user
             POSTGRES_PASSWORD: 1234
             PGDATA: /var/lib/postgresql/data
-        volumes: # docker 相關資料放的位置
+        volumes: # docker 相關資料存放的位置，新的container可以保有舊的資料
             - db-data:/var/lib/postgresql/data
-        ports: # 開啟port端（對內對外的）
+        ports: # 開啟port端（對外對內的）
             - "5432:5432"
-    pgadmin: # 以下類推
-        image: dpage/pgadmin4:latest
+    pgadmin: # 定義一個service叫做pgadmin (pgadmin)
+        image: dpage/pgadmin4:latest 
         restart: always
         environment:
             PGADMIN_DEFAULT_EMAIL: yitingwu.1030@gmail.com
@@ -23,7 +25,7 @@ services: # 講述有幾個service 底下為 postgresSQL 跟 pgadmin
             - "8080:80"
         volumes:
             - pgadmin-data:/var/lib/pgadmin
-        links:
+        links: #與db做連結 稱db的別名為pgsql-server
             - "db:pgsql-server"
 volumes:
     db-data:
